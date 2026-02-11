@@ -5,6 +5,7 @@ export interface Project {
   year: string;
   imageUrl: string;
   description: string;
+  modelUrl?: string; // Optional URL for GLB/GLTF/OBJ file
 }
 
 export interface ChatMessage {

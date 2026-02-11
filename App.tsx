@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Menu, X, ArrowDown, Instagram, Linkedin, Twitter, Mail } from 'lucide-react';
 import { ProjectCard } from './components/ProjectCard';
 import { ChatWidget } from './components/ChatWidget';
+import { ProjectModal } from './components/ProjectModal';
 import { Project, NavItem } from './types';
 
 // Mock Data
@@ -13,7 +14,8 @@ const PROJECTS: Project[] = [
     category: "Residential",
     year: "2024",
     imageUrl: "https://picsum.photos/seed/arch1/800/1200",
-    description: "A monolithic structure rising from the dense urban fabric. Black concrete and tinted glass create a void in the skyline."
+    description: "A monolithic structure rising from the dense urban fabric. Black concrete and tinted glass create a void in the skyline.",
+    modelUrl: "demo-model-1"
   },
   {
     id: 2,
@@ -21,7 +23,8 @@ const PROJECTS: Project[] = [
     category: "Cultural",
     year: "2023",
     imageUrl: "https://picsum.photos/seed/arch2/800/1000",
-    description: "Designed for auditory isolation. The brutalist geometry reflects sound outward, creating a sanctuary of absolute silence within."
+    description: "Designed for auditory isolation. The brutalist geometry reflects sound outward, creating a sanctuary of absolute silence within.",
+    modelUrl: "demo-model-2"
   },
   {
     id: 3,
@@ -29,7 +32,8 @@ const PROJECTS: Project[] = [
     category: "Residential",
     year: "2023",
     imageUrl: "https://picsum.photos/seed/arch3/800/1200",
-    description: "Cantilevered over a 200m drop. The structure anchors itself into the granite, becoming an extension of the mountain."
+    description: "Cantilevered over a 200m drop. The structure anchors itself into the granite, becoming an extension of the mountain.",
+    modelUrl: "demo-model-3"
   },
   {
     id: 4,
@@ -37,7 +41,8 @@ const PROJECTS: Project[] = [
     category: "Public",
     year: "2022",
     imageUrl: "https://picsum.photos/seed/arch4/800/1000",
-    description: "A fortress for knowledge. Thick walls regulate temperature passively, protecting the archives from harsh desert climates."
+    description: "A fortress for knowledge. Thick walls regulate temperature passively, protecting the archives from harsh desert climates.",
+    modelUrl: "demo-model-4"
   },
   {
     id: 5,
@@ -45,7 +50,8 @@ const PROJECTS: Project[] = [
     category: "Commercial",
     year: "2024",
     imageUrl: "https://picsum.photos/seed/arch5/800/1200",
-    description: "Retail space reimagined as an art installation. Light serves as the primary material, carving spaces out of darkness."
+    description: "Retail space reimagined as an art installation. Light serves as the primary material, carving spaces out of darkness.",
+    modelUrl: "demo-model-5"
   },
   {
     id: 6,
@@ -53,7 +59,8 @@ const PROJECTS: Project[] = [
     category: "Monument",
     year: "2021",
     imageUrl: "https://picsum.photos/seed/arch6/800/1000",
-    description: "A tribute to the unknown. No windows, no doors visible from the facade. Entry is subterranean."
+    description: "A tribute to the unknown. No windows, no doors visible from the facade. Entry is subterranean.",
+    modelUrl: "demo-model-6"
   }
 ];
 
@@ -66,10 +73,21 @@ const NAV_ITEMS: NavItem[] = [
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   
-  // Custom cursor logic could go here, but keeping it native for performance in this demo
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedProject]);
   
   return (
     <div className="bg-[#050505] min-h-screen text-neutral-200 selection:bg-white selection:text-black">
@@ -221,7 +239,11 @@ function App() {
         <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-24 gap-x-8">
           {PROJECTS.map((project, index) => (
             <div key={project.id} className={`${index % 2 !== 0 ? 'md:translate-y-24' : ''}`}>
-              <ProjectCard project={project} index={index} />
+              <ProjectCard 
+                project={project} 
+                index={index} 
+                onClick={setSelectedProject}
+              />
             </div>
           ))}
         </div>
@@ -307,6 +329,12 @@ function App() {
         <p>&copy; 2024 VOID Architecture. All rights reserved.</p>
         <p className="mt-4 md:mt-0">Designed in total darkness.</p>
       </footer>
+
+      {/* Project 3D Modal */}
+      <ProjectModal 
+        project={selectedProject} 
+        onClose={() => setSelectedProject(null)} 
+      />
 
       {/* Gemini Chat Widget */}
       <ChatWidget />

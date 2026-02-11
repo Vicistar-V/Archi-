@@ -1,14 +1,15 @@
 import React from 'react';
 import { Project } from '../types';
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Box } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
   index: number;
+  onClick: (project: Project) => void;
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -16,6 +17,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
       className="group relative w-full aspect-[3/4] overflow-hidden bg-neutral-900 cursor-pointer"
+      onClick={() => onClick(project)}
     >
       <img
         src={project.imageUrl}
@@ -25,6 +27,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+
+      {/* 3D Indicator Icon */}
+      <div className="absolute top-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-2 group-hover:translate-y-0 delay-75">
+        <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 border border-white/10 rounded-full">
+           <Box size={14} className="text-white" />
+           <span className="text-[10px] uppercase tracking-widest text-white font-mono">3D View</span>
+        </div>
+      </div>
 
       {/* Content */}
       <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
